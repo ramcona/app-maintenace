@@ -18,6 +18,7 @@
             <th>Schema</th>
             <th>Tabel</th>
             <th>Kolom Acuan</th>
+            <th>Nilai Batas Demarkasi (Hari)</th>
             <th>Keterangan</th>
             <th>Aksi</th>
           </tr>
@@ -36,6 +37,7 @@
               <td><%= config.schema_name %></td>
               <td><%= config.table_name %></td>
               <td><%= config.reference_column %></td>
+              <td><%= config.demarcation_value %></td>
               <td><%= config.description %></td>
               <td>
                 <a href="/config/edit/<%= config.id %>" class="btn btn-sm btn-warning">
