@@ -142,19 +142,20 @@ def _check_db_connections():
     
     log.info("Semua koneksi database berhasil.")
 
-def _parse_condition(ref_col, demarc_val, description):
+def _parse_condition(ref_col, demarc_val):
     """
     Menganalisis deskripsi untuk membangun kondisi SQL yang dinamis.
+    Menggunakan demarc_val sebagai jumlah hari.
     """
-    condition = ""
-    if "5 Tahun" in description:
-        condition = f"{ref_col} < NOW() - INTERVAL '5 years'"
-    elif "1 Tahun" in description:
-        condition = f"{ref_col} < NOW() - INTERVAL '1 year'"
-    else:
-        # Fallback to demarc_val if no specific description is matched
-        # Ensure demarc_val is treated as a string literal for comparison
-        condition = f"{ref_col} < '{demarc_val}'"
+    # Ensure demarc_val is treated as an integer
+    try:
+        demarc_days = int(demarc_val)
+    except (ValueError, TypeError):
+        log.error(f"Invalid demarcation_value: {demarc_val}. Expected an integer representing days.")
+        raise ValueError("demarcation_value must be an integer representing days.")
+
+    # Construct the condition to archive data older than demarc_days
+    condition = f"{ref_col} < NOW() - INTERVAL '{demarc_days} days'"
     return condition
 
 def _log_activity(app_hook, level, source, message, log_prefix=""):
@@ -271,7 +272,7 @@ def _transfer_data_to_archive(single_config: dict, **kwargs):
     app_hook = PostgresHook(postgres_conn_id=APP_DB_CONN_ID)
 
     try:
-        condition = _parse_condition(ref_col, demarc_val, description)
+        condition = _parse_condition(ref_col, demarc_val)
         select_sql = f"SELECT * FROM {schema_name}.{table_name} WHERE {condition};"
         
         data_to_archive = main_hook.get_records(select_sql)

@@ -19,7 +19,12 @@ exports.create = (req, res) => {
 // Menyimpan konfigurasi baru
 exports.store = async (req, res) => {
   try {
-    await ArchiveConfig.create(req.body);
+    const { demarcation_value, ...otherBody } = req.body;
+    const newConfig = {
+      ...otherBody,
+      demarcation_value: parseInt(demarcation_value, 10),
+    };
+    await ArchiveConfig.create(newConfig);
     await ActivityLog.create({
       level: 'INFO',
       source: 'WEB_APP',
@@ -47,7 +52,12 @@ exports.edit = async (req, res) => {
 // Mengupdate konfigurasi
 exports.update = async (req, res) => {
   try {
-    await ArchiveConfig.update(req.body, { where: { id: req.params.id } });
+    const { demarcation_value, ...otherBody } = req.body;
+    const updatedConfig = {
+      ...otherBody,
+      demarcation_value: parseInt(demarcation_value, 10),
+    };
+    await ArchiveConfig.update(updatedConfig, { where: { id: req.params.id } });
     await ActivityLog.create({
       level: 'INFO',
       source: 'WEB_APP',

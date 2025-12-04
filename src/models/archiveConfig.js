@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     schema_name: DataTypes.STRING,
     table_name: DataTypes.STRING,
     reference_column: DataTypes.STRING,
-    demarcation_value: DataTypes.STRING,
+    demarcation_value: DataTypes.INTEGER,
     action_on_main: DataTypes.STRING,
     action_on_archive: DataTypes.STRING,
     description: DataTypes.TEXT,
