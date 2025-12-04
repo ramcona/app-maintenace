@@ -34,3 +34,4 @@ dags/__pycache__/
 
 # Config
 config/config.json
+copy.env
